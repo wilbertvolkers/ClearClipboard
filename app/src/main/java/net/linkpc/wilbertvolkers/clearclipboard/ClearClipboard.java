@@ -29,7 +29,7 @@ import de.robv.android.xposed.XposedHelpers;
  * - https://github.com/hamzahrmalik/CopyToast
  * - https://github.com/Tungstwenty/SecureSamsungClipboard
  * - https://developer.android.com/guide/topics/text/copy-paste.html
- * - http://wii.logdown.com/posts/2013/11/15/android-studio-git-tutorial
+ * - https://www.londonappdeveloper.com/how-to-use-git-hub-with-android-studio/
  *
  * Note:
  * - if you change the API you need to consider some dependencies in the code
