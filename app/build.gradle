@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.2"
+
+    def versionPropsFile = file('version.properties')
+    if (versionPropsFile.canRead()) {
+        //get old version number, increase and write back
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def newCode = versionProps['VERSION_CODE'].toInteger() + 1
+        versionProps['VERSION_CODE']=newCode.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        defaultConfig {
+            applicationId "net.linkpc.wilbertvolkers.clearclipboard"
+            minSdkVersion 15
+            targetSdkVersion 23
+            versionCode newCode
+            versionName "0."+newCode.toString()
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+
+        // http://stackoverflow.com/a/27068573/115145
+        //rename apk, does not work, launching app uses an older value
+        //The APK file ...\app-debug-x.yy.apk does not exist on disk
+        /*
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                output.outputFile = new File(
+                        output.outputFile.parent,
+                        output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
+            }
+        }
+        */
+    }
+    else {
+        throw new GradleException("Could not read version.properties!")
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    testCompile 'junit:junit:4.12'
+
+    //app/build.gradle
+    //wjv: xposed. NB: provided means the lib will not be included in the apk
+    //wjv: disable Instant Run (File -> Settings -> Build, Execution, Deployment -> Instant Run
+    provided 'de.robv.android.xposed:api:82'
+    provided 'de.robv.android.xposed:api:82:sources'
+}
+
